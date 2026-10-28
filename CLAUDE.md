@@ -54,7 +54,7 @@ results/         # all images, gifs, tables
 - `results/events_vs_frames.gif`: two panels side by side.
   - Left, titled "Normal camera (30 fps)": shows the most recent 30 fps frame (it freezes between frames).
   - Right, titled "Event camera": events from the last 5 ms, red = brighter (ON), blue = darker (OFF), on black.
-- Render every 2nd simulation step, play at 20 fps, add the caption "slowed down 10x".
+- Render every 2nd simulation step, play at 20 fps, add the caption "slowed down 25x" (each GIF frame shows 2 ms of real time but stays on screen for 50 ms).
 - Expected: red dots on the ball's front edge, blue on the back edge, nothing in the background. Left panel jumps in steps.
 
 ## Step 2 — Dodge test (dodge_test.py)
@@ -79,7 +79,7 @@ results/         # all images, gifs, tables
   - Frames at 1000 fps (needed to match event timing): 320 x 240 x 1 byte x 1000.
 - `results/data_size.png`: bar chart, log scale, KB per second for each option and scene.
 - `results/data_size.md`: small table of the numbers.
-- Expected: still camera → events are tiny compared with frames. Moving camera → event data explodes, far above 30 fps frames and possibly above 1000 fps frames. (Real sensors cap their event rate and drop events when overloaded; mention this in the README limitations.)
+- Expected: still camera → event data is far smaller than 1000 fps frames (the fair comparison, since that is what a normal camera needs to match event timing), but a bright, fast object can still make events about a third the size of 30 fps frames. Moving camera → event data explodes, far above 30 fps frames and possibly above 1000 fps frames. (Real sensors cap their event rate and drop events when overloaded; mention this in the README limitations.)
 
 ## Step 4 — README.md
 Sections: title, one-line summary, the GIF, how it works (4 short bullets), results (both charts + a "Findings" section left as `TODO: write in your own words`), limitations, how to run, credits.

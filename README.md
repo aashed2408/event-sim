@@ -20,7 +20,10 @@ Left: how many milliseconds earlier the event camera notices the ball. Right: ho
 ### Data size: how many bytes per second?
 ![Data size](results/data_size.png)
 
-Numbers are in `results/data_size.md`.
+Numbers are in `results/data_size.md`. The chart has a log scale, so each step up the side means 10 times more data.
+
+- **Still camera:** events are about 834 KB per second. That is about 1% of 1000 fps video (76,800 KB/s). 1000 fps is the fair comparison, because a normal camera would need that many pictures per second to match the event camera's timing. Compared with plain 30 fps video (2,304 KB/s), events are only about a third the size. That's because a bright, fast ball makes about 20 events at every pixel it crosses (about 10 as it arrives and about 10 as it leaves).
+- **Moving camera:** when the whole background moves, every pixel keeps changing, so every pixel fires. Events jump to about 65,100 KB per second: 28 times more than 30 fps video and almost as much as 1000 fps video. Event cameras save data only when most of the scene stays still.
 
 ### Findings
 TODO: write in your own words
