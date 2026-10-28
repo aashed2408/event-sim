@@ -25,6 +25,7 @@ MIN_SECONDS = 0.5        # skip videos shorter than half a second
 TARGET_WIDTH = 320       # shrink every video to 320 px wide
 GIF_FPS = 24             # GIF plays at 24 fps
 BYTES_PER_EVENT = 8
+TEST_VIDEO_NAME = "test_ball_240fps"   # the fake ball video made by make_gif.py
 README_START = "<!-- REAL WORLD START -->"
 README_END = "<!-- REAL WORLD END -->"
 WARNING = ("Lots of events everywhere. The phone probably moved, or indoor lights were flickering. "
@@ -216,7 +217,9 @@ def main():
             continue
         if stats["busy"]:
             print("  " + WARNING)
-        update_readme(stats)
+        # The fake test ball isn't a real video, so it doesn't go in the README
+        if stats["name"] != TEST_VIDEO_NAME:
+            update_readme(stats)
         done.append(stats)
 
     # Plain-English summary
@@ -229,7 +232,8 @@ def main():
               f"{s['events']:,} events, about {s['events_per_s']:,.0f} events per second.")
         print(f"  That is {s['event_kb_s']:,.1f} KB/s of events vs {s['frame_kb_s']:,.1f} KB/s for 30 fps video.")
         print(f"  Open: {s['gif']} and results/{s['name']}_stats.md")
-    print("README.md's 'Real-world test' section now shows the newest video.")
+    if any(s["name"] != TEST_VIDEO_NAME for s in done):
+        print("README.md's 'Real-world test' section now shows the newest video.")
 
 
 if __name__ == "__main__":
