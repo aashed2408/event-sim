@@ -32,6 +32,8 @@ TODO: write in your own words
 <!-- REAL WORLD START -->
 ![IMG_8838 (online-video-cutter.com) as events](results/IMG_8838%20%28online-video-cutter.com%29_events.gif)
 
+![IMG_8838 (online-video-cutter.com) data per second](results/IMG_8838%20%28online-video-cutter.com%29_data_size.png)
+
 | | |
 |---|---:|
 | Frames used | 107 (filmed at 240 fps, 0.45 s of real time) |
@@ -40,6 +42,7 @@ TODO: write in your own words
 | Events per second | 197,960 |
 | Events, KB per second (8 bytes each) | 1,583.7 |
 | 30 fps frames, KB per second (same size) | 4,675.2 |
+| 240 fps frames, KB per second (same size, matches event timing) | 37,401.6 |
 <!-- REAL WORLD END -->
 
 ## Limitations

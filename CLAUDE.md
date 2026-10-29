@@ -108,8 +108,10 @@ Requirements:
 - Run the SAME event model from sim.py (C = 0.2). Timestamp of frame i = i x 1000 / fps milliseconds.
 - Name outputs after the video so nothing gets overwritten:
   - `results/<video name>_events.gif`: same two-panel layout as Step 1. Left "Normal camera (30 fps)": keep only every (fps / 30)th frame and hold it. Right "Event camera": events since the previous frame, red = ON, blue = OFF, on black. Play at 24 fps with a caption saying how much it is slowed down.
-  - `results/<video name>_stats.md`: frames used, total events, events per second, and KB per second for events (8 bytes each) vs 30 fps frames at the same size.
-- README: add a "Real-world test" section between the lines `<!-- REAL WORLD START -->` and `<!-- REAL WORLD END -->`. Until a real video exists it says "Add a video to the videos folder and run phone_demo.py." Each run replaces what's between the markers with the newest video's GIF and stats.
+  - `results/<video name>_stats.md`: frames used, total events, events per second, and KB per second for events (8 bytes each) vs 30 fps frames at the same size, and vs frames at the filmed frame rate (the fair comparison, since that matches the events' timing).
+  - `results/<video name>_data_size.png`: bar chart, log scale, KB per second for events vs 30 fps frames vs frames at the filmed frame rate (like Step 3, for the real video).
+- README: add a "Real-world test" section between the lines `<!-- REAL WORLD START -->` and `<!-- REAL WORLD END -->`. Until a real video exists it says "Add a video to the videos folder and run phone_demo.py." Each run replaces what's between the markers with the newest video's GIF, data chart and stats.
+- Expected for a real video filmed with the phone held still: event data is far smaller than frames at the filmed frame rate. (A "moving camera" version needs a separate clip filmed while turning the phone.)
 - If the video is shorter than half a second or has no frames, print a friendly message and skip it. Never crash on one bad file.
 - Print a plain-English summary when done, including which files to open.
 - After each video, check the event rate. If more than half of all pixels fire events in most frames, print: "Lots of events everywhere. The phone probably moved, or indoor lights were flickering. Try filming with the phone held still, in daylight."
