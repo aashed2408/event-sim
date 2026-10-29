@@ -14,6 +14,9 @@ from pathlib import Path
 from urllib.parse import quote
 
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")  # draw charts without opening a window
+import matplotlib.pyplot as plt
 import imageio.v2 as imageio
 import imageio_ffmpeg
 
@@ -153,6 +156,8 @@ def process_video(path, fps):
         "events_per_s": total_events / seconds,
         "event_kb_s": total_events / seconds * BYTES_PER_EVENT / 1000,
         "frame_kb_s": w * h * 30 / 1000,
+        # Frames at the filmed frame rate: what a normal camera needs to match the events' timing
+        "film_frame_kb_s": w * h * fps / 1000,
         "busy": busy_frames > n_frames / 2,
     }
     stats["table"] = (
@@ -162,14 +167,36 @@ def process_video(path, fps):
         f"| Total events | {total_events:,} |\n"
         f"| Events per second | {stats['events_per_s']:,.0f} |\n"
         f"| Events, KB per second (8 bytes each) | {stats['event_kb_s']:,.1f} |\n"
-        f"| 30 fps frames, KB per second (same size) | {stats['frame_kb_s']:,.1f} |\n")
+        f"| 30 fps frames, KB per second (same size) | {stats['frame_kb_s']:,.1f} |\n"
+        f"| {fps:g} fps frames, KB per second (same size, matches event timing) | {stats['film_frame_kb_s']:,.1f} |\n")
     with open(f"results/{name}_stats.md", "w") as f:
         f.write(f"# {Path(path).name}\n\n{stats['table']}")
+    stats["chart"] = save_data_chart(stats)
     return stats
 
 
+def save_data_chart(stats):
+    """Bar chart (log scale): KB per second for events vs normal video, like Step 3."""
+    labels = ["Events", "Frames 30 fps", f"Frames {stats['fps']:g} fps"]
+    values = [stats["event_kb_s"], stats["frame_kb_s"], stats["film_frame_kb_s"]]
+    fig, ax = plt.subplots(figsize=(7, 4.5))
+    bars = ax.bar(labels, values, color=["tab:red", "tab:gray", "tab:gray"])
+    ax.bar_label(bars, labels=[f"{v:,.0f}" for v in values], fontsize=9)
+    ax.set_yscale("log")
+    # Start the axis well below the smallest bar, so a short bar doesn't look like nothing
+    # (and leave room above the tallest bar for its number)
+    ax.set_ylim(10 ** (np.floor(np.log10(min(values))) - 1), max(values) * 3)
+    ax.set_ylabel("KB per second (log scale)")
+    ax.set_title(f"Data per second: {stats['name']}")
+    fig.tight_layout()
+    chart_path = f"results/{stats['name']}_data_size.png"
+    fig.savefig(chart_path, dpi=120)
+    plt.close(fig)
+    return chart_path
+
+
 def update_readme(stats):
-    """Put the newest video's GIF and stats between the markers in README.md."""
+    """Put the newest video's GIF, data chart and stats between the markers in README.md."""
     if not os.path.exists("README.md"):
         return
     text = open("README.md").read()
@@ -179,7 +206,8 @@ def update_readme(stats):
     after = text.split(README_END)[1]
     # quote() turns spaces and brackets in the file name into %20, %28 ...
     # so the image link still works on GitHub
-    middle = (f"\n![{stats['name']} as events]({quote(stats['gif'])})\n\n{stats['table']}")
+    middle = (f"\n![{stats['name']} as events]({quote(stats['gif'])})\n\n"
+              f"![{stats['name']} data per second]({quote(stats['chart'])})\n\n{stats['table']}")
     with open("README.md", "w") as f:
         f.write(before + README_START + middle + README_END + after)
 
@@ -234,7 +262,7 @@ def main():
         print(f"{s['name']}: {s['frames']} frames ({s['seconds']:.2f} s of real time) made "
               f"{s['events']:,} events, about {s['events_per_s']:,.0f} events per second.")
         print(f"  That is {s['event_kb_s']:,.1f} KB/s of events vs {s['frame_kb_s']:,.1f} KB/s for 30 fps video.")
-        print(f"  Open: {s['gif']} and results/{s['name']}_stats.md")
+        print(f"  Open: {s['gif']}, {s['chart']} and results/{s['name']}_stats.md")
     if any(s["name"] != TEST_VIDEO_NAME for s in done):
         print("README.md's 'Real-world test' section now shows the newest video.")
 

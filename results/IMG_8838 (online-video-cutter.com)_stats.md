@@ -8,3 +8,4 @@
 | Events per second | 197,960 |
 | Events, KB per second (8 bytes each) | 1,583.7 |
 | 30 fps frames, KB per second (same size) | 4,675.2 |
+| 240 fps frames, KB per second (same size, matches event timing) | 37,401.6 |
