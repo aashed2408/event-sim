@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from urllib.parse import quote
 
 import numpy as np
 import imageio.v2 as imageio
@@ -176,7 +177,9 @@ def update_readme(stats):
         return
     before = text.split(README_START)[0]
     after = text.split(README_END)[1]
-    middle = (f"\n![{stats['name']} as events]({stats['gif']})\n\n{stats['table']}")
+    # quote() turns spaces and brackets in the file name into %20, %28 ...
+    # so the image link still works on GitHub
+    middle = (f"\n![{stats['name']} as events]({quote(stats['gif'])})\n\n{stats['table']}")
     with open("README.md", "w") as f:
         f.write(before + README_START + middle + README_END + after)
 
