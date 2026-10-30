@@ -7,7 +7,6 @@ Usage:
 """
 import argparse
 import os
-import re
 import subprocess
 import sys
 import tempfile
@@ -188,9 +187,7 @@ def save_data_chart(stats):
     # (and leave room above the tallest bar for its number)
     ax.set_ylim(10 ** (np.floor(np.log10(min(values))) - 1), max(values) * 3)
     ax.set_ylabel("KB per second (log scale)")
-    # Title = just the video's name, without bracketed extras added by editing
-    # websites, e.g. "IMG_8838 (online-video-cutter.com)" -> "IMG_8838"
-    ax.set_title(re.sub(r"\s*\(.*?\)", "", stats["name"]).strip() or stats["name"])
+    ax.set_title("Data Per Second")
     fig.tight_layout()
     chart_path = f"results/{stats['name']}_data_size.png"
     fig.savefig(chart_path, dpi=120)
